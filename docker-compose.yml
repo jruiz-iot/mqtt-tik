@@ -1,0 +1,63 @@
+version: '1'
+
+services:
+    # influxdb = time series database
+    influxdb:
+        image: hypriot/rpi-influxdb
+        container_name: influxdb
+        environment:
+            - INFLUXDB_DB=sensors
+            - INFLUXDB_DATA_ENGINE=tsm1
+            - INFLUXDB_REPORTING_DISABLED=false
+            - INFLUXDB_ADMIN_USER=admin
+            - INFLUXDB_ADMIN_PASSWORD=admin
+        volumes:
+            - ./data/influxdb:/var/lib/influxdb
+    
+    # grafana = data visualisation and dashboarding
+    grafana:
+        image: tcjennings/rpi-grafana
+        container_name: grafana
+        ports:
+            - "3000:3000"
+        environment:
+            - GF_AUTH_ANONYMOUS_ENABLED=true
+            - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+        volumes:
+            - ./data/grafana:/var/lib/grafana
+            - ./grafana-datasources.yml/:/etc/grafana/provisioning/datasources/all.yml
+    
+    # chronograf = simple influxdb querying
+    chronograf:
+        image: mbrande3/rpi-chronograf
+        container_name: chronograf
+        environment:
+            - INFLUXDB_URL=http://influxdb:8086
+        ports:
+            - "8888:8888"
+        volumes:
+             - ./data/chronograf:/var/lib/chronograf
+        links:
+            # Chronograf requires network access to InfluxDB
+            - influxdb
+        depends_on:
+            - influxdb
+       
+    # telegraf = forwarding from MQTT to InfluxDB
+    telegraf:
+        image: swestcott/rpi-telegraf
+        container_name: telegraf
+        volumes:
+            - ./telegraf.conf:/etc/telegraf/telegraf.conf
+        links:
+            - influxdb
+        depends_on:
+            - influxdb
+    
+    # mosquitto = eclipse MQTT broker
+    mosquitto:
+        image:  mjenz/rpi-mosquitto
+        container_name: mosquitto
+        ports:
+            - "1883:1883"
+        
