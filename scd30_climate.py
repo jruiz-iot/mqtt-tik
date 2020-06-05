@@ -8,6 +8,7 @@ import smbus
 import RPi.GPIO as gpio
 import struct
 import time
+from mqtt.mqtt_functionality import publish
 
 
 #SDC30
@@ -78,6 +79,7 @@ if __name__ == "__main__":
             'co2': co2,
         }
         if temp > 0:
+            publish("temperature", temp)
             print('CO2: ', co2, 'Temperature: ', temp, 'Humidity: ', humi)
         else:
             print('Not available')
