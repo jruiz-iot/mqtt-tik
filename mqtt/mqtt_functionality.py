@@ -4,6 +4,6 @@ import paho.mqtt.client as mqtt
 def publish(measurement, value):
     client = mqtt.Client()
     client.connect("localhost",1883,60)
-    client.publish("air_sensor", "%s, site=office value=%s" % (measurement, value))
+    client.publish("air_sensor", "%s,site=office value=%s" % (measurement, value))
     client.disconnect()
 
