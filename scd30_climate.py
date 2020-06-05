@@ -74,15 +74,18 @@ if __name__ == "__main__":
         time.sleep(.5)
 
         data_write = {
+            'status': 'ON'
             'temperature': temp,
             'humidity': humi,
             'co2': co2,
         }
         if temp > 0:
-            publish("temperature", temp)
-            print('CO2: ', co2, 'Temperature: ', temp, 'Humidity: ', humi)
+            for k,v in data_write.items():
+                publish(k,v)
+            
         else:
             print('Not available')
+            publish('status', 'Offline')
             pass
     finally:
         pass
