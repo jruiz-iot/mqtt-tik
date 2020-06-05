@@ -5,6 +5,7 @@ services:
     influxdb:
         image: hypriot/rpi-influxdb
         container_name: influxdb
+        restart: always
         environment:
             - INFLUXDB_DB=sensors
             - INFLUXDB_DATA_ENGINE=tsm1
@@ -18,6 +19,7 @@ services:
         container_name: grafana
         ports:
             - "3000:3000"
+        restart: always
         environment:
             - GF_AUTH_ANONYMOUS_ENABLED=true
             - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
@@ -33,6 +35,7 @@ services:
             - INFLUXDB_URL=http://influxdb:8086
         ports:
             - "8888:8888"
+        restart: always
         volumes:
              - ./data/chronograf:/var/lib/chronograf
         links:
@@ -45,6 +48,7 @@ services:
     telegraf:
         image: swestcott/rpi-telegraf
         container_name: telegraf
+        restart: always
         volumes:
             - ./telegraf.conf:/etc/telegraf/telegraf.conf
         links:
@@ -56,6 +60,7 @@ services:
     mosquitto:
         image:  mjenz/rpi-mosquitto
         container_name: mosquitto
+        restart: unless-stopped
         ports:
             - "1883:1883"
         
