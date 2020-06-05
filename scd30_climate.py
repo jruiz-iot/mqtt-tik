@@ -74,7 +74,7 @@ if __name__ == "__main__":
         time.sleep(.5)
 
         data_write = {
-            'status': 'ON'
+            'status': 'ON',
             'temperature': temp,
             'humidity': humi,
             'co2': co2,
