@@ -48,6 +48,7 @@ if __name__ == "__main__":
         co2_raw[3] = raw_val[4]
         co2_val = bytearray(co2_raw)
         co2 = struct.unpack('>f', co2_val)[0]
+        co2 = co2*100
         print("CO2 = %f" % co2)
         time.sleep(.5)
 
